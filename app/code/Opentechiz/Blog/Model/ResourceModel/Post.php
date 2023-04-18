@@ -14,4 +14,6 @@ class Post extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
     {
         $this->_init('opentechiz_blog_post', 'post_id');
     }
+
+    
 }
