@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="table_name" resource="default" engine="innodb" comment="Table comment">
+        <column xsi:type="int" name="entity_id" padding="11" unsigned="false" nullable="false" identity="true" comment=""/>
+        <column xsi:type="int" name="another_column" padding="11" unsigned="false" nullable="false" default="0" comment=""/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="REFERENCE_ID">
+            <column name="entity_id"/>
+            <column name="another_column"/>
+        </constraint>
+        <index referenceId="INDEX_REFERENCE_ID" indexType="btree">
+            <column name="another_column"/>
+        </index>
+    </table>
+</schema>
