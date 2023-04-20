@@ -1,63 +1,42 @@
 <?php
-
 namespace Opentechiz\Blog\Controller;
 
-use Magento\Framework\App\Action\Forward;
-use Magento\Framework\App\ActionFactory;
-use Magento\Framework\App\ActionInterface;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\App\RouterInterface;
-
-/**
- * Class Router
- */
-class Router implements RouterInterface
+class Router implements \Magento\Framework\App\RouterInterface
 {
     /**
-     * @var ActionFactory
+     * @var \Magento\Framework\View\Result\PageFactory
      */
-    private $actionFactory;
-
+    protected $_pageFactory;
+    protected $actionFactory;
+    protected $_postFactory;
     /**
-     * @var ResponseInterface
-     */
-    private $response;
-
-    /**
-     * Router constructor.
-     *
-     * @param ActionFactory $actionFactory
-     * @param ResponseInterface $response
+     * @param \Magento\Framework\App\Action\Context $context
      */
     public function __construct(
-        ActionFactory $actionFactory,
-        ResponseInterface $response
+        \Magento\Framework\App\ActionFactory $actionFactory,
+        \Opentechiz\Blog\Model\PostFactory $postFactory,
     ) {
         $this->actionFactory = $actionFactory;
-        $this->response = $response;
+        $this->_postFactory = $postFactory;
     }
 
-    /**
-     * @param RequestInterface $request
-     * @return ActionInterface|null
-     */
-    public function match(RequestInterface $request): ?ActionInterface
+    public function match(\Magento\Framework\App\RequestInterface $request)
     {
-        $identifier = trim($request->getPathInfo(), '/');
+        $url_key = trim($request->getPathInfo(), '/blog/index/');
+        $url_key = rtrim($url_key, '/');
 
-        if (strpos($identifier, 'post') !== false) {
-            $request->setModuleName('blog');
-            $request->setControllerName('post');
-            $request->setActionName('index');
-            $request->setParams([
-                'first_param' => 'first_value',
-                'second_param' => 'second_value'
-            ]);
-
-            return $this->actionFactory->create(Forward::class, ['request' => $request]);
+        $post = $this->_postFactory->create();
+        $post_id = $post->checkUrlKey($url_key);
+        if (!$post_id) {
+            return null;
         }
 
-        return null;
+        $request->setModuleName('blog')
+            ->setControllerName('view')
+            ->setActionName('index')
+            ->setParam('post_id', $post_id);
+        $request->setAlias(\Magento\Framework\Url::REWRITE_REQUEST_PATH_ALIAS, $url_key);
+
+        return $this->actionFactory->create('Magento\Framework\App\Action\Forward');
     }
 }

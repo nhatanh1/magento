@@ -36,4 +36,9 @@ class PostList extends \Magento\Framework\View\Element\Template
             return $this->getData('posts');
         }
     }
+
+    public function getIdentities()
+    {
+        return [\Opentechiz\Blog\Model\Post::CACHE_TAG . '_' . 'list'];
+    }
 }
