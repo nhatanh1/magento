@@ -5,7 +5,7 @@ class Index extends \Magento\Backend\App\Action
 {
     const ADMIN_RESOURCE = 'Opentechiz_Blog::index';
 
-    const PAGE_TITLE = 'Page Title';
+    const PAGE_TITLE = 'Opentechiz Blog';
 
     /**
      * @var \Magento\Framework\View\Result\PageFactory
