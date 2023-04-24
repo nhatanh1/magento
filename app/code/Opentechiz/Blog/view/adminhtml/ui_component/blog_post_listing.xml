@@ -22,6 +22,7 @@
         </item>
     </argument>
     <dataSource name="blog_post_listing_data_source">
+        <aclResource>Opentechiz_Blog::blog_content</aclResource>
         <argument name="dataProvider" xsi:type="configurableObject">
             <argument name="class" xsi:type="string">PostGridDataProvider</argument>
             <argument name="name" xsi:type="string">blog_post_listing_data_source</argument>
@@ -29,14 +30,13 @@
             <argument name="requestFieldName" xsi:type="string">id</argument>
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="update_url" xsi:type="url" path="mui/index/render"/>
+                    <item name="component" xsi:type="string">Magento_Ui/js/grid/provider</item>
+                    <item name="update_url" path="mui/index/render" xsi:type="url"/>
+                    <item name="storageConfig" xsi:type="array">
+                        <item name="indexField" xsi:type="string">block_id</item>
+                    </item>
                 </item>
             </argument>
-        </argument>
-        <argument name="data" xsi:type="array">
-            <item name="js_config" xsi:type="array">
-                <item name="component" xsi:type="string">Magento_Ui/js/grid/provider</item>
-            </item>
         </argument>
     </dataSource>
     <container name="listing_top">
