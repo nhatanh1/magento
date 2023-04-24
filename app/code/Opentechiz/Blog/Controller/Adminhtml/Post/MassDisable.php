@@ -1,61 +1,57 @@
 <?php
 namespace Opentechiz\Blog\Controller\Adminhtml\Post;
 
-use Magento\Framework\Exception\LocalizedException;
+use Magento\Backend\App\Action\Context;
+use Magento\Ui\Component\MassAction\Filter;
+use Opentechiz\Blog\Model\ResourceModel\Post\CollectionFactory;
 use Magento\Framework\Controller\ResultFactory;
 
-class MassDisable extends \Magento\Backend\App\Action
+/**
+ * Class MassDisable
+ */
+class MassDisable  extends \Magento\Backend\App\Action
 {
-    const ADMIN_RESOURCE = 'Opentechiz_Blog::massdisable';
-
+    /**
+     * @var Filter
+     */
     protected $filter;
-    private $logger;
-    protected $collectionFactory;
 
     /**
-     * @param \Magento\Backend\App\Action\Context $context
+     * @var CollectionFactory
      */
-    public function __construct(
-       \Magento\Backend\App\Action\Context $context,
-       \Magento\Ui\Component\MassAction\Filter $filter,
-       \Psr\Log\LoggerInterface $logger,
-       \Opentechiz\Blog\Model\ResourceModel\Post\Collection $collectionFactory,
-    )
+    protected $collectionFactory;
+
+
+    /**
+     * @param Context $context
+     * @param Filter $filter
+     * @param CollectionFactory $collectionFactory
+     */
+    public function __construct(Context $context, Filter $filter, CollectionFactory $collectionFactory)
     {
         $this->filter = $filter;
-        $this->logger = $logger;
         $this->collectionFactory = $collectionFactory;
-        return parent::__construct($context);
+        parent::__construct($context);
     }
-
-    
+    /**
+     * Execute action
+     *
+     * @return \Magento\Backend\Model\View\Result\Redirect
+     * @throws \Magento\Framework\Exception\LocalizedException|\Exception
+     */
     public function execute()
     {
         $collection = $this->filter->getCollection($this->collectionFactory->create());
-        
-        foreach ($collection as $item) {
-            try {
-                //code...
-                $item->setIsActive(false);
-            $item->save();
-            } catch (LocalizedException $e) {
-                //throw $th;
-                $this->logger->error($e->getLogMessage());
-            }
-            
-            $this->messageManager->addSuccess(__('A total of %1 record(s) have been disabled.', $collection->getSize()));
-            $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-            return $resultRedirect->setPath('*/*/');
-        }
-    }
 
-    /**
-     * Is the user allowed to view the page.
-    *
-    * @return bool
-    */
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed(static::ADMIN_RESOURCE);
+        foreach ($collection as $item) {
+            $item->setIsActive(false);
+            $item->save();
+        }
+
+        $this->messageManager->addSuccess(__('A total of %1 record(s) have been disabled.', $collection->getSize()));
+
+        /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+        return $resultRedirect->setPath('*/*/');
     }
 }

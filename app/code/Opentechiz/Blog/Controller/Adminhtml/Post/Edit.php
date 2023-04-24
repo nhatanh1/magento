@@ -1,47 +1,100 @@
 <?php
-
 namespace Opentechiz\Blog\Controller\Adminhtml\Post;
 
-class Edit extends \Magento\Backend\Block\Widget\Form\Container
-{
-    const ADMIN_RESOURCE = 'Opentechiz_Blog::edit';
+use Magento\Backend\App\Action;
 
+class Edit extends \Magento\Backend\App\Action
+{
+    /**
+     * Core registry
+     *
+     * @var \Magento\Framework\Registry
+     */
     protected $_coreRegistry = null;
 
     /**
-     * @param \Magento\Backend\App\Action\Context $context
+     * @var \Magento\Framework\View\Result\PageFactory
+     */
+    protected $resultPageFactory;
+
+    /**
+     * @param Action\Context $context
+     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
+     * @param \Magento\Framework\Registry $registry
      */
     public function __construct(
-        \Magento\Backend\Block\Widget\Context $context,
-        \Magento\Framework\Registry $registry,
-        array $data = [],
+        Action\Context $context,
+        \Magento\Framework\View\Result\PageFactory $resultPageFactory,
+        \Magento\Framework\Registry $registry
     ) {
-        parent::__construct($context, $data);
+        $this->resultPageFactory = $resultPageFactory;
+        $this->_coreRegistry = $registry;
+        parent::__construct($context);
     }
 
     /**
-     * Index action
-     *
-     * @return \Magento\Framework\View\Result\Page
+     * {@inheritdoc}
      */
-    public function execute()
+    protected function _isAllowed()
     {
-        /** @var \Magento\Framework\View\Result\Page $resultPage */
-        $resultPage = $this->_pageFactory->create();
-        $resultPage->setActiveMenu(static::ADMIN_RESOURCE);
-        $resultPage->addBreadcrumb(__(static::PAGE_TITLE), __(static::PAGE_TITLE));
-        $resultPage->getConfig()->getTitle()->prepend(__(static::PAGE_TITLE));
+        return $this->_authorization->isAllowed('Opentechiz_Blog::save');
+    }
 
+    /**
+     * Init actions
+     *
+     * @return \Magento\Backend\Model\View\Result\Page
+     */
+    protected function _initAction()
+    {
+        // load layout, set active menu and breadcrumbs
+        /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
+        $resultPage = $this->resultPageFactory->create();
+        $resultPage->setActiveMenu('Opentechiz_blog::post')
+            ->addBreadcrumb(__('Blog'), __('Blog'))
+            ->addBreadcrumb(__('Manage Blog Posts'), __('Manage Blog Posts'));
         return $resultPage;
     }
 
     /**
-     * Is the user allowed to view the page.
+     * Edit Blog post
      *
-     * @return bool
+     * @return \Magento\Backend\Model\View\Result\Page|\Magento\Backend\Model\View\Result\Redirect
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
-    protected function _isAllowed()
+    public function execute()
     {
-        return $this->_authorization->isAllowed(static::ADMIN_RESOURCE);
+        $id = $this->getRequest()->getParam('post_id');
+        $model = $this->_objectManager->create('Opentechiz\Blog\Model\Post');
+
+        if ($id) {
+            $model->load($id);
+            if (!$model->getId()) {
+                $this->messageManager->addError(__('This post no longer exists.'));
+                /** \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
+                $resultRedirect = $this->resultRedirectFactory->create();
+
+                return $resultRedirect->setPath('*/*/');
+            }
+        }
+
+        $data = $this->_objectManager->get('Magento\Backend\Model\Session')->getFormData(true);
+        if (!empty($data)) {
+            $model->setData($data);
+        }
+
+        $this->_coreRegistry->register('blog_post', $model);
+
+        /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
+        $resultPage = $this->_initAction();
+        $resultPage->addBreadcrumb(
+            $id ? __('Edit Blog Post') : __('New Blog Post'),
+            $id ? __('Edit Blog Post') : __('New Blog Post')
+        );
+        $resultPage->getConfig()->getTitle()->prepend(__('Blog Posts'));
+        $resultPage->getConfig()->getTitle()
+            ->prepend($model->getId() ? $model->getTitle() : __('New Blog Post'));
+
+        return $resultPage;
     }
 }

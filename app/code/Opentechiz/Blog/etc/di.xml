@@ -9,7 +9,7 @@
             </argument>
         </arguments>
     </virtualType>
-    <virtualType name="PostGridDataProvider" type="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider">
+    <virtualType name="blog_post_listing_data_source" type="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider">
         <arguments>
             <argument name="collection" xsi:type="object" shared="false">Opentechiz\Blog\Model\ResourceModel\Post\Collection</argument>
             <argument name="filterPool" xsi:type="object" shared="false">BlogGirdFilterPool</argument>

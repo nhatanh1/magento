@@ -21,23 +21,17 @@
             </item>
         </item>
     </argument>
-    <dataSource name="blog_post_listing_data_source">
+    <dataSource name="blog_post_listing_data_source" component="Magento_Ui/js/grid/provider">
+        <settings>
+            <updateUrl path="mui/index/render"/>
+        </settings>
         <aclResource>Opentechiz_Blog::blog_content</aclResource>
-        <argument name="dataProvider" xsi:type="configurableObject">
-            <argument name="class" xsi:type="string">PostGridDataProvider</argument>
-            <argument name="name" xsi:type="string">blog_post_listing_data_source</argument>
-            <argument name="primaryFieldName" xsi:type="string">block_id</argument>
-            <argument name="requestFieldName" xsi:type="string">id</argument>
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="component" xsi:type="string">Magento_Ui/js/grid/provider</item>
-                    <item name="update_url" path="mui/index/render" xsi:type="url"/>
-                    <item name="storageConfig" xsi:type="array">
-                        <item name="indexField" xsi:type="string">block_id</item>
-                    </item>
-                </item>
-            </argument>
-        </argument>
+        <dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider" name="blog_post_listing_data_source">
+            <settings>
+                <requestFieldName>id</requestFieldName>
+                <primaryFieldName>main_table.block_id</primaryFieldName>
+            </settings>
+        </dataProvider>
     </dataSource>
     <container name="listing_top">
         <argument name="data" xsi:type="array">
@@ -199,7 +193,7 @@
                 <argument name="data" xsi:type="array">
                     <item name="config" xsi:type="array">
                         <item name="dataScope" xsi:type="string">update_time</item>
-                        <item name="label" xsi:type="string" translate="true">Modified</item>
+                        <item name="label" xsi:type="string" translate="true">Updated</item>
                         <item name="childDefaults" xsi:type="array">
                             <item name="provider" xsi:type="string">blog_post_listing.blog_post_listing.listing_top.listing_filters</item>
                         </item>
@@ -402,7 +396,7 @@
                     <item name="filter" xsi:type="string">dateRange</item>
                     <item name="component" xsi:type="string">Magento_Ui/js/grid/columns/date</item>
                     <item name="dataType" xsi:type="string">date</item>
-                    <item name="label" xsi:type="string" translate="true">Modified</item>
+                    <item name="label" xsi:type="string" translate="true">Updated</item>
                 </item>
             </argument>
         </column>

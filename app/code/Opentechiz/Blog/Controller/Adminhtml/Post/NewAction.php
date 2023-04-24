@@ -3,44 +3,40 @@ namespace Opentechiz\Blog\Controller\Adminhtml\Post;
 
 class NewAction extends \Magento\Backend\App\Action
 {
-    const ADMIN_RESOURCE = 'Opentechiz_Blog::newaction';
-
     /**
-     * @var \Magento\Framework\View\Result\PageFactory
+     * @var \Magento\Backend\Model\View\Result\Forward
      */
     protected $resultForwardFactory;
 
     /**
      * @param \Magento\Backend\App\Action\Context $context
+     * @param \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory
      */
     public function __construct(
-       \Magento\Backend\App\Action\Context $context,
-       \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory
-    )
-    {
+        \Magento\Backend\App\Action\Context $context,
+        \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory
+    ) {
         $this->resultForwardFactory = $resultForwardFactory;
-        return parent::__construct($context);
+        parent::__construct($context);
     }
 
     /**
-     * Index action
+     * {@inheritdoc}
+     */
+    protected function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Opentechiz_Blog::save');
+    }
+
+    /**
+     * Forward to edit
      *
-     * @return \Magento\Framework\View\Result\Page
+     * @return \Magento\Backend\Model\View\Result\Forward
      */
     public function execute()
     {
+        /** @var \Magento\Backend\Model\View\Result\Forward $resultForward */
         $resultForward = $this->resultForwardFactory->create();
-
         return $resultForward->forward('edit');
-    }
-
-    /**
-     * Is the user allowed to view the page.
-    *
-    * @return bool
-    */
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed(static::ADMIN_RESOURCE);
     }
 }

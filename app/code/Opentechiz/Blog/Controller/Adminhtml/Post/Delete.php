@@ -1,6 +1,8 @@
 <?php
-
 namespace Opentechiz\Blog\Controller\Adminhtml\Post;
+
+use Magento\Backend\App\Action;
+use Magento\TestFramework\ErrorLog\Logger;
 
 class Delete extends \Magento\Backend\App\Action
 {

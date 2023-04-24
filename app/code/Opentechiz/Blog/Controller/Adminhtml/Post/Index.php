@@ -1,52 +1,55 @@
 <?php
 namespace Opentechiz\Blog\Controller\Adminhtml\Post;
 
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\View\Result\PageFactory;
+
 class Index extends \Magento\Backend\App\Action
 {
-    const ADMIN_RESOURCE = 'Opentechiz_Blog::index';
-
-    const PAGE_TITLE = 'Opentechiz Blog';
 
     /**
-     * @var \Magento\Framework\View\Result\PageFactory
+     * @var PageFactory
      */
-    protected $_pageFactory;
+    protected $resultPageFactory;
 
     /**
-     * @param \Magento\Backend\App\Action\Context $context
+     * @param Context $context
+     * @param PageFactory $resultPageFactory
      */
     public function __construct(
-       \Magento\Backend\App\Action\Context $context,
-       \Magento\Framework\View\Result\PageFactory $pageFactory
-    )
-    {
-        $this->_pageFactory = $pageFactory;
-        return parent::__construct($context);
+        Context $context,
+        PageFactory $resultPageFactory
+    ) {
+        parent::__construct($context);
+        $this->resultPageFactory = $resultPageFactory;
     }
 
     /**
      * Index action
      *
-     * @return \Magento\Framework\View\Result\Page
+     * @return \Magento\Backend\Model\View\Result\Page
      */
     public function execute()
     {
-         /** @var \Magento\Framework\View\Result\Page $resultPage */
-         $resultPage = $this->_pageFactory->create();
-         $resultPage->setActiveMenu(static::ADMIN_RESOURCE);
-         $resultPage->addBreadcrumb(__(static::PAGE_TITLE), __(static::PAGE_TITLE));
-         $resultPage->getConfig()->getTitle()->prepend(__(static::PAGE_TITLE));
+        /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
+        $resultPage = $this->resultPageFactory->create();
+        $resultPage->setActiveMenu('Opentechiz_Blog::post');
+        $resultPage->addBreadcrumb(__('Blog Posts'), __('Blog Posts'));
+        $resultPage->addBreadcrumb(__('Manage Blog Posts'), __('Manage Blog Posts'));
+        $resultPage->getConfig()->getTitle()->prepend(__('Blog Posts'));
 
-         return $resultPage;
+        return $resultPage;
     }
 
     /**
-     * Is the user allowed to view the page.
-    *
-    * @return bool
-    */
+     * Is the user allowed to view the blog post grid.
+     *
+     * @return bool
+     */
     protected function _isAllowed()
     {
-        return $this->_authorization->isAllowed(static::ADMIN_RESOURCE);
+        return $this->_authorization->isAllowed('Opentechiz_Blog::post');
     }
+
+
 }
