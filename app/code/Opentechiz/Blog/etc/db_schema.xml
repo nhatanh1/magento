@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="opentechiz_blog_post" resource="default" engine="innodb" comment="Table Post">
+        <column xsi:type="int" name="post_id" padding="11" unsigned="false" nullable="false" identity="true" comment="Post ID"/>
+        <column xsi:type="varchar" name="url_key" length="100" unsigned="false" nullable="true" default="null" />
+        <column xsi:type="varchar" name="title" length="255" unsigned="false" nullable="true" comment="Blog Title"/>
+        <column xsi:type="text" name="content" comment="Blog Content"/>
+        <column xsi:type="smallint" name="is_active" unsigned="false" nullable="false" default="1" comment="Is Post Active?"/>
+        <column xsi:type="datetime" name="creation_time" unsigned="false" nullable="false" comment="Creatiom Time"/>
+        <column xsi:type="datetime" name="update_time" unsigned="false" nullable="false" comment="Update Time"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="post_id"/>
+        </constraint>
+        <index referenceId="INDEX_REFERENCE_ID" indexType="btree">
+            <column name="url_key"/>
+        </index>
+    </table>
+
+    <table name="opentechiz_blog_comment" resource="default" engine="innodb" comment="Table Comment">
+        <column xsi:type="int" name="comment_id" padding="11" unsigned="false" nullable="false" identity="true" comment="Comment Id"/>
+        <column xsi:type="int" name="post_id" padding="11" unsigned="false" nullable="false" identity="false" comment="Post Id"/>
+        <column xsi:type="varchar" name="title" length="255" unsigned="false" nullable="true" comment="Comment Title"/>
+        <column xsi:type="text" name="detail" comment="Detail Comment"/>
+        <column xsi:type="varchar" name="nickname" length="255" unsigned="false" nullable="true" comment="Nickname"/>
+        <column xsi:type="int" name="customer_id" unsigned="true" nullable="true" identity="false" comment="Customer ID"/>
+        <column xsi:type="smallint" name="is_active" unsigned="false" nullable="false" default="1" comment="Is Comment Active?"/>
+        <column xsi:type="datetime" name="creation_time" unsigned="false" nullable="false" comment="Creatiom Time"/>
+        <column xsi:type="datetime" name="update_time" unsigned="false" nullable="false" comment="Update Time"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="comment_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="opentechiz_blog_post_opentechiz_blog_comment" table="opentechiz_blog_comment"
+            column="post_id" referenceTable="opentechiz_blog_post" referenceColumn="post_id"/>
+        <constraint xsi:type="foreign" referenceId="opentechiz_blog_comment_customer_entity" table="opentechiz_blog_comment" 
+            column="customer_id" referenceTable="customer_entity" referenceColumn="entity_id"/>
+    </table>
+</schema>
