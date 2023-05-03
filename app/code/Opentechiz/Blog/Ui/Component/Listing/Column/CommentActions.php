@@ -7,21 +7,15 @@ use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
 use Magento\Framework\UrlInterface;
 
-class PostActions extends Column
+class CommentActions extends Column
 {
     /** Url path */
-    const BLOG_URL_PATH_EDIT = 'blog/post/edit';
-    const BLOG_URL_PATH_DELETE = 'blog/post/delete';
-    const BLOG_URL_PATH_DISABLE = 'blog/post/disable';
-    const BLOG_URL_PATH_ENABLE = 'blog/post/enable';
+    const BLOG_URL_PATH_DELETE = 'blog/comments/delete';
+    const BLOG_URL_PATH_DISABLE = 'blog/comments/disable';
+    const BLOG_URL_PATH_ENABLE = 'blog/comments/enable';
 
     /** @var UrlInterface */
     protected $urlBuilder;
-
-    /**
-     * @var string
-     */
-    private $editUrl;
 
     /**
      * @param ContextInterface $context
@@ -37,10 +31,8 @@ class PostActions extends Column
         UrlInterface $urlBuilder,
         array $components = [],
         array $data = [],
-        $editUrl = self::BLOG_URL_PATH_EDIT
     ) {
         $this->urlBuilder = $urlBuilder;
-        $this->editUrl = $editUrl;
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
@@ -55,13 +47,9 @@ class PostActions extends Column
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
                 $name = $this->getData('name');
-                if (isset($item['post_id'])) {
-                    $item[$name]['edit'] = [
-                        'href' => $this->urlBuilder->getUrl($this->editUrl, ['post_id' => $item['post_id']]),
-                        'label' => __('Edit')
-                    ];
+                if (isset($item['comment_id'])) {
                     $item[$name]['delete'] = [
-                        'href' => $this->urlBuilder->getUrl(self::BLOG_URL_PATH_DELETE, ['post_id' => $item['post_id']]),
+                        'href' => $this->urlBuilder->getUrl(self::BLOG_URL_PATH_DELETE, ['comment_id' => $item['comment_id']]),
                         'label' => __('Delete'),
                         'confirm' => [
                             'title' => __('Delete "%1"', $item['title']),
@@ -70,7 +58,7 @@ class PostActions extends Column
                     ];
                     if ($item['is_active'] == 1) {
                         $item[$name]['disable'] = [
-                            'href' => $this->urlBuilder->getUrl(self::BLOG_URL_PATH_DISABLE, ['post_id' => $item['post_id']]),
+                            'href' => $this->urlBuilder->getUrl(self::BLOG_URL_PATH_DISABLE, ['comment_id' => $item['comment_id']]),
                             'label' => __('Disable'),
                             'confirm' => [
                                 'title' => __('Disable "%1"', $item['title']),
@@ -79,7 +67,7 @@ class PostActions extends Column
                         ];
                     } else {
                         $item[$name]['enable'] = [
-                            'href' => $this->urlBuilder->getUrl(self::BLOG_URL_PATH_ENABLE, ['post_id' => $item['post_id']]),
+                            'href' => $this->urlBuilder->getUrl(self::BLOG_URL_PATH_ENABLE, ['comment_id' => $item['comment_id']]),
                             'label' => __('Enable'),
                             'confirm' => [
                                 'title' => __('Enable "%1"', $item['title']),

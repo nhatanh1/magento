@@ -1,9 +1,11 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
-    <menu> <!-- defining the menu section -->
+    <menu>        <!-- defining the menu section -->
         <!-- adding an entry for the Opentechiz_Blog module under the content menu item -->
         <add id="Opentechiz_Blog::blog_content" title="Blog" module="Opentechiz_Blog" sortOrder="50" parent="Magento_Backend::content" resource="Opentechiz_Blog::blog_content"/>
         <!-- adding an entry for the posts submenu item under the Blog item -->
         <add id="Opentechiz_Blog::post" title="Post" module="Opentechiz_Blog" sortOrder="55" parent="Opentechiz_Blog::blog_content" action="blog/post/" resource="Opentechiz_Blog::post" />
+        <add id="Opentechiz_Blog::comment" title="Comment" module="Opentechiz_Blog" sortOrder="60" parent="Opentechiz_Blog::blog_content" action="blog/comments/" resource="Opentechiz_Blog::comment"/>
+
     </menu>
 </config>

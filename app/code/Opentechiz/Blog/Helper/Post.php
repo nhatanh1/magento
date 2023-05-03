@@ -5,7 +5,9 @@ use Magento\Framework\App\Action\Action;
 class Post extends \Magento\Framework\App\Helper\AbstractHelper
 {
 
-   
+    /**
+     * @var \Opentechiz\Blog\Model\Post
+     */
     protected $_post;
 
     /**
@@ -13,7 +15,14 @@ class Post extends \Magento\Framework\App\Helper\AbstractHelper
      */
     protected $resultPageFactory;
 
-  
+    /**
+     * Constructor
+     *
+     * @param \Magento\Framework\App\Helper\Context $context
+     * @param \Opentechiz\Blog\Model\Post $post
+     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Opentechiz\Blog\Model\Post $post,
