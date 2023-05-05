@@ -1,10 +1,10 @@
 <?php $post = $block->getPost(); ?>
 <?php $comments = $block->getComments(); ?>
 <?php
-/** @var \Magento\Customer\Model\Session $customerSession */
-$customerSession = \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Customer\Model\Session::class);
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$customerSession = $objectManager->get('Magento\Customer\Model\Session');
 ?>
-
+<div class="note"></div>
 <h1 class="blog-post-item-title"><?php echo $post->getTitle(); ?></h1>
 
 <div class="blog-post-item-content">
@@ -19,41 +19,40 @@ $customerSession = \Magento\Framework\App\ObjectManager::getInstance()->get(\Mag
     <h2 class="comment-title">Comments</h2>
     <ul class="comment-list">
         <?php foreach ($comments as $comment) : ?>
-        <li class="comment-item">
-            <div class="comment-author">
-                <?php if (@($comment->getNickName())) : ?>
-                <?php echo $comment->getNickName() ?>
-                <?php else : ?>
-                <?php echo $comment['lastname'] . ' ' . $comment['firstname']; ?></div>
-            <?php endif; ?>
-            <div class="flex comment-content">
-                <div class="comment-detail">
-                    <?php echo $comment->getDetail(); ?>
+            <li class="comment-item">
+                <div class="comment-author">
+                    <?php echo $comment->getNickName() ?>
                 </div>
-                <div class="comment-time">
-                    <?php echo $comment->getCreationTime(); ?>
+                <div class="flex comment-content">
+                    <div class="comment-detail">
+                        <?php echo $comment->getDetail(); ?>
+                    </div>
+                    <div class="comment-time">
+                        <?php echo $comment->getCreationTime(); ?>
+                    </div>
                 </div>
-            </div>
-        </li>
+            </li>
         <?php endforeach; ?>
     </ul>
 </div>
 
-<?php if ($customerSession->isLoggedIn()) : ?>
-<form id="<?php echo $block->getFormId(); ?>" action="<?php echo $block->getFormAction(); ?>" method="post">
+<form id="<?php echo $block->getFormId(); ?>">
     <!-- Thêm các trường dữ liệu mới vào form comment -->
     <input type="test" name="post_id" value="<?php echo $post->getId() ?>" readonly hidden>
     <input type="test" name="post_url" value="<?php echo $post->getUrlKey() ?>" readonly hidden>
-    <input type="test" name="customer_id"
-        value="<?php echo $block->escapeHtml($customerSession->getCustomer()->getId()) ?>" readonly hidden>
-    <input type="text" name="nickname"
-        value="<?php echo $block->escapeHtml($customerSession->getCustomer()->getName()) ?>" placeholder="Nickname"
-        required>
+    <input type="text" name="nickname" placeholder="Name" required>
+    <input type="email" name="email" placeholder="Email" required>
     <input type="text" name="title" placeholder="Title" required>
     <textarea name="comment" placeholder="Comment" required></textarea>
-    <button type="submit">Submit</button>
+    <button class="submit">Submit</button>
 </form>
-<?php else : ?>
-<p>Vui lòng đăng nhập để sử dụng các tính năng của chúng tôi.</p>
-<button><a href="http://magento-dev.com/customer/account/login/">Login</a></button>
-<?php endif; ?>
+<?php $form_action =  $block->getFormAction(); ?>
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "Opentechiz_Blog/js/commentajax": {
+                "AjaxCommentPostUrl": "<?php echo $form_action; ?>"
+            }
+        }
+    }
+</script>

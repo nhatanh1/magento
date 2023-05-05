@@ -51,7 +51,6 @@ class PostView extends \Magento\Framework\View\Element\Template
             ->create()
             ->addFilter('main_table.is_active', 1)
             ->addFilter('main_table.post_id', $post_id)
-            ->join('customer_entity', 'customer_entity.entity_id=main_table.customer_id', ['lastname', 'firstname'])
             ->addOrder(CommentInterface::CREATION_TIME, CommentCollection::SORT_ORDER_DESC);
 
         return $comments;
@@ -59,7 +58,7 @@ class PostView extends \Magento\Framework\View\Element\Template
 
     public function getFormId()
     {
-        return 'blog_comment_form';
+        return 'comment-form';
     }
 
     public function getFormAction()

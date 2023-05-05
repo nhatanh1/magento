@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="opentechiz" translate="label" sortOrder="450">
+            <label>Opentechiz</label>
+        </tab>
+        <section id="blog" translate="label" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Blog</label>
+            <tab>opentechiz</tab>
+            <resource>Opentechiz_Blog::config_blog</resource>
+            <group id="general" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="0">
+                <label>Comment form</label>
+                <field id="sender_email" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Email Sender</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
+                </field>
+                <field id="template" translate="label comment" type="select">
+                    <label>New Comment Template</label>
+                    <comment>Email teamplate chose based on theme fallback when "Defautl" option is selected</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Template</source_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

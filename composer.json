@@ -69,6 +69,7 @@
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
         "dg/bypass-finals": "^1.4",
         "friendsofphp/php-cs-fixer": "^3.8",
+        "honl/magento2-templatehints": "^0.3.0",
         "lusitanian/oauth": "^0.8",
         "magento/magento-coding-standard": "*",
         "magento/magento2-functional-testing-framework": "^4.2.1",
