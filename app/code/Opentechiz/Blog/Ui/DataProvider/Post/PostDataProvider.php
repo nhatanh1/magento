@@ -4,7 +4,7 @@ namespace Opentechiz\Blog\Ui\DataProvider\Post;
 
 use Opentechiz\Blog\Model\ResourceModel\Post\CollectionFactory;
 use Opentechiz\Blog\Api\Data\PostInterface;
-use Opentechiz\Blog\Model\ResourceModel\Post\Collection as CommentCollection;
+use Opentechiz\Blog\Model\ResourceModel\Post\Collection as PostCollection;
 
 class PostDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
 {
@@ -19,8 +19,9 @@ class PostDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
         array $meta = [],
         array $data = [],
     ) {
+        $this->collection = $collectionFactory->create();
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
         $this->collection = $collectionFactory->create()
-        ->addOrder(PostInterface::CREATION_TIME, CommentCollection::SORT_ORDER_DESC);
+            ->addOrder(PostInterface::IS_ACTIVE, PostCollection::SORT_ORDER_DESC);
     }
 }

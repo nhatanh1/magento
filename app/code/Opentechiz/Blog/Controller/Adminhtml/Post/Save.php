@@ -1,17 +1,23 @@
 <?php
-namespace Blog\Blog\Controller\Adminhtml\Post;
+namespace Opentechiz\Blog\Controller\Adminhtml\Post;
 
 use Magento\Backend\App\Action;
 use Magento\TestFramework\ErrorLog\Logger;
+use Magento\Framework\Stdlib\DateTime\DateTime;
 
 class Save extends \Magento\Backend\App\Action
 {
-
+    /** 
+     * @param \Magento\Framework\Stdlib\DateTime\DateTime $dateTime
+    */
+    protected $dateTime;
+    
     /**
      * @param Action\Context $context
      */
-    public function __construct(Action\Context $context)
+    public function __construct(Action\Context $context, DateTime $dateTime)
     {
+        $this->dateTime = $dateTime;
         parent::__construct($context);
     }
 
@@ -20,7 +26,7 @@ class Save extends \Magento\Backend\App\Action
      */
     protected function _isAllowed()
     {
-        return $this->_authorization->isAllowed('Blog_Blog::save');
+        return $this->_authorization->isAllowed('Opentechiz_Blog::save');
     }
 
     /**
@@ -31,15 +37,21 @@ class Save extends \Magento\Backend\App\Action
     public function execute()
     {
         $data = $this->getRequest()->getPostValue();
+        // var_dump($data);
+        // die;
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
         if ($data) {
-            /** @var \Blog\Blog\Model\Post $model */
-            $model = $this->_objectManager->create('Blog\Blog\Model\Post');
+            /** @var \Opentechiz\Blog\Model\Post $model */
+            
+            $model = $this->_objectManager->create('Opentechiz\Blog\Model\Post');
 
             $id = $this->getRequest()->getParam('post_id');
             if ($id) {
                 $model->load($id);
+                $data['update_time'] = $this->dateTime->gmtDate();
+            }else {
+                $data['creation_time'] = $this->dateTime->gmtDate();
             }
 
             $model->setData($data);

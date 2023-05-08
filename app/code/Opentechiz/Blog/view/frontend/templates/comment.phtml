@@ -1,0 +1,76 @@
+<?php
+
+/** @var \Opentechiz\Blog\Block\Template $block */
+?>
+<?php $provatecomments = $block->getPrivateComments(); ?>
+<div class="private-comment <?php if (count($provatecomments) == 0) : ?> <?php echo 'hidden' ?> <?php endif; ?>">
+    <h2 class=" private-comment-title">Private Comments</h2>
+    <ul class="private-comment-list">
+        <?php if (count($provatecomments) > 0) : ?>
+        <?php foreach ($provatecomments as $comment) : ?>
+        <li class="comment-item">
+            <div class="comment-title">
+                <span class="title-comment p-5">Title: </span><?php echo $comment->getTitle() ?>
+            </div>
+            <div class="comment-author">
+                <span class="name-comment p-5">UserName: </span><?php echo $comment->getNickName() ?>
+            </div>
+            <div class="flex comment-content">
+                <div class="comment-detail">
+                    <span class="comment p-5">Comment: </span><?php echo $comment->getDetail(); ?>
+                </div>
+                <div class="comment-time">
+                    <?php echo $comment->getCreationTime(); ?>
+                </div>
+            </div>
+        </li>
+        <?php endforeach; ?>
+        <?php endif; ?>
+    </ul>
+</div>
+
+<?php $comments = $block->getComments(); ?>
+<?php if (count($comments) > 0) : ?>
+<div class="comment-wrapper">
+    <h2 class="comment-title">Comments</h2>
+    <ul class="comment-list">
+        <?php foreach ($comments as $comment) : ?>
+        <li class="comment-item">
+            <div class="comment-title">
+                <span class="title-comment p-5">Title: </span><?php echo $comment->getTitle() ?>
+            </div>
+            <div class="comment-author">
+                <span class="name-comment p-5">UserName: </span><?php echo $comment->getNickName() ?>
+            </div>
+            <div class="flex comment-content">
+                <div class="comment-detail">
+                    <span class="comment p-5">Comment: </span><?php echo $comment->getDetail(); ?>
+                </div>
+                <div class="comment-time">
+                    <?php echo $comment->getCreationTime(); ?>
+                </div>
+            </div>
+        </li>
+        <?php endforeach; ?>
+    </ul>
+</div>
+<?php endif; ?>
+
+<form id="<?php echo $block->getFormId(); ?>" class="col-3">
+    <!-- Thêm các trường dữ liệu mới vào form comment -->
+    <input type="test" name="post_id" value="<?php echo $block->getPostId() ?>" readonly required hidden>
+    <input type="text" name="nickname" placeholder="Name" required>
+    <input type="text" name="title" placeholder="Title" required>
+    <textarea name="comment" placeholder="Comment" required></textarea>
+    <button class="submit">Submit</button>
+</form>
+<?php $form_action =  $block->getFormAction(); ?>
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "Opentechiz_Blog/js/commentajax": {
+                "AjaxCommentPostUrl": "<?php echo $form_action; ?>"
+            }
+        }
+    }
+</script>

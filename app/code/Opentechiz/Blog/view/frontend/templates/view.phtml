@@ -1,58 +1,14 @@
 <?php $post = $block->getPost(); ?>
-<?php $comments = $block->getComments(); ?>
-<?php
-$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-$customerSession = $objectManager->get('Magento\Customer\Model\Session');
-?>
+
 <div class="note"></div>
-<h1 class="blog-post-item-title"><?php echo $post->getTitle(); ?></h1>
+<div class="post-content">
+    <h1 class="blog-post-item-title"><?php echo $post->getTitle(); ?></h1>
 
-<div class="blog-post-item-content">
-    <?php echo $post->getContent(); ?>
+    <div class="blog-post-item-content">
+        <?php echo $post->getContent(); ?>
+    </div>
+
+    <div class="blog-post-item-meta">
+        <strong><?php echo __('Created at:'); ?></strong> <?php echo $post->getCreationTime(); ?>
+    </div>
 </div>
-
-<div class="blog-post-item-meta">
-    <strong><?php echo __('Created at:'); ?></strong> <?php echo $post->getCreationTime(); ?>
-</div>
-
-<div class="comment-wrapper">
-    <h2 class="comment-title">Comments</h2>
-    <ul class="comment-list">
-        <?php foreach ($comments as $comment) : ?>
-            <li class="comment-item">
-                <div class="comment-author">
-                    <?php echo $comment->getNickName() ?>
-                </div>
-                <div class="flex comment-content">
-                    <div class="comment-detail">
-                        <?php echo $comment->getDetail(); ?>
-                    </div>
-                    <div class="comment-time">
-                        <?php echo $comment->getCreationTime(); ?>
-                    </div>
-                </div>
-            </li>
-        <?php endforeach; ?>
-    </ul>
-</div>
-
-<form id="<?php echo $block->getFormId(); ?>">
-    <!-- Thêm các trường dữ liệu mới vào form comment -->
-    <input type="test" name="post_id" value="<?php echo $post->getId() ?>" readonly hidden>
-    <input type="test" name="post_url" value="<?php echo $post->getUrlKey() ?>" readonly hidden>
-    <input type="text" name="nickname" placeholder="Name" required>
-    <input type="email" name="email" placeholder="Email" required>
-    <input type="text" name="title" placeholder="Title" required>
-    <textarea name="comment" placeholder="Comment" required></textarea>
-    <button class="submit">Submit</button>
-</form>
-<?php $form_action =  $block->getFormAction(); ?>
-<script type="text/x-magento-init">
-    {
-        "*": {
-            "Opentechiz_Blog/js/commentajax": {
-                "AjaxCommentPostUrl": "<?php echo $form_action; ?>"
-            }
-        }
-    }
-</script>

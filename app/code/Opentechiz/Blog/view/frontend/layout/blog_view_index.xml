@@ -1,8 +1,12 @@
 <?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Opentechiz_Blog::custom.css"/>
+    </head>
     <body>
         <referenceContainer name="content">
-            <block class="Opentechiz\Blog\Block\PostView" name="Opentechiz_Blog_PostView" template="Opentechiz_Blog::view.phtml" cacheable="false"/>
+            <block class="Opentechiz\Blog\Block\PostView" name="Opentechiz_Blog_PostView" template="Opentechiz_Blog::view.phtml"/>
+            <block class="Opentechiz\Blog\Block\CommentView" name="Opentechiz_Blog_CommentView" template="Opentechiz_Blog::comment.phtml" cacheable="false" />
         </referenceContainer>
     </body>
 </page>

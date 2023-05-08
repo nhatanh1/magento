@@ -62,6 +62,11 @@ class Comment extends \Magento\Framework\Model\AbstractModel implements \Magento
         return [self::CACHE_TAG . '_' . $this->getId()];
     }
 
+    public function getId()
+    {
+        return $this->_getData('comment_id');
+    }
+
     public function getAvailableStatuses()
     {
         return [self::STATUS_ENABLED => __('Enabled'), self::STATUS_DISABLED => __('Disabled')];
