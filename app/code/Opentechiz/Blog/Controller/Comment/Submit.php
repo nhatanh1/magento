@@ -11,7 +11,9 @@ use Opentechiz\Blog\Model\ResourceModel\Comment\CollectionFactory;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Framework\Mail\Template\TransportBuilder;
 use Magento\Customer\Model\Session;
-use \Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Translate\Inline\State;
+use Opentechiz\Blog\Model\CustomEmailSender;
 
 class Submit extends \Magento\Framework\App\Action\Action
 {
@@ -50,6 +52,13 @@ class Submit extends \Magento\Framework\App\Action\Action
 
     protected $scopeConfig;
 
+    protected $_inlineTranslation;
+
+    /**
+     * @var CustomEmail
+     */
+    protected $_customEmail;
+
     /**
      * @param \Magento\Framework\App\Action\Context $context
      */
@@ -62,6 +71,8 @@ class Submit extends \Magento\Framework\App\Action\Action
         TransportBuilder $transportBuilder,
         Session $session,
         ScopeConfigInterface $scopeConfig,
+        State $state,
+        CustomEmailSender $customEmailSender,
     ) {
         $this->dateTime = $dateTime;
         $this->commentFactory = $commentFactory;
@@ -69,6 +80,8 @@ class Submit extends \Magento\Framework\App\Action\Action
         $this->_transportBuilder = $transportBuilder;
         $this->_customerSession = $session;
         $this->scopeConfig = $scopeConfig;
+        $this->_inlineTranslation = $state;
+        $this->_customEmail = $customEmailSender;
         return parent::__construct($context);
     }
 
@@ -79,6 +92,9 @@ class Submit extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
+
+        $customer = $this->_customerSession->getCustomer();
+
         $error = false;
         $message = '';
         $jsonResult = $this->resultJsonFactory->create();
@@ -89,7 +105,7 @@ class Submit extends \Magento\Framework\App\Action\Action
             return $jsonResult;
         }
 
-        
+
 
         // Lấy dữ liệu gửi lên từ from
         $data = $this->checkComment();
@@ -101,31 +117,25 @@ class Submit extends \Magento\Framework\App\Action\Action
             $comments->setData($data);
 
             $nickname = $data['nickname'];
-            // $email = $data['email'];
+            $email = $customer['email'];
 
             $check = $comments->save();
         }
 
-        // if ($check) {
-        //     $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
-        //     $from = ['email' => 'noly241161@gmail.com', 'name' => 'Nanhh'];
+        $parameters = [
+            'name' => $nickname,
+            'email' => $email
+        ];
 
-        //     $transport = $this->_transportBuilder
-        //         ->setTemplateIdentifier($this->scopeConfig->getValue('blog/general/template', $storeScope))
-        //         ->setTemplateOptions(
-        //             [
-        //                 'area' =>   \Magento\Backend\App\Area\FrontNameResolver::AREA_CODE,
-        //                 'store' =>  \Magento\Store\Model\Store::DEFAULT_STORE_ID,
-        //             ]
-        //         )
-        //         ->setTemplateVars(['name' => $nickname])
-        //         ->setFrom($from)
-        //         ->addTo([$email])
-        //         ->setReplyTo($email)
-        //         ->getTransport();
-
-        //     $transport->sendMessage();
-        // }
+        if ($check) {
+            $this->_eventManager->dispatch('comment_success', $parameters);
+            // $templateId = 'blog_comment_notification_email_template'; // template id
+            // $fromEmail = 'noly241161@gmail.com';  // sender Email id
+            // $fromName = 'Admin';             // sender Name
+            // $toEmail = $customer['email']; // receiver email id
+            // $templateVars = ['name' => $nickname];
+            // $this->_customEmail->sendEmail($templateId, $templateVars, $fromEmail, $toEmail);
+        }
 
         if (!$error) {
             $jsonResult->setData(['result' => 'success', 'message' => 'Thanks you submission', 'data' => $data]);
@@ -165,7 +175,7 @@ class Submit extends \Magento\Framework\App\Action\Action
             'title' => $title,
             'detail' => $comment,
             'nickname' => $nickname,
-            'customer_id' => $customerId,   
+            'customer_id' => $customerId,
             'is_active' => '0',
             'creation_time' => $now,
             'update_time' => $now

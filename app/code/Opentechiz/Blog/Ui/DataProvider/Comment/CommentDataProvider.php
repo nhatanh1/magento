@@ -22,6 +22,6 @@ class CommentDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
         $this->collection = $collectionFactory->create();
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
         $this->collection = $collectionFactory->create()
-            ->addOrder(CommentInterface::IS_ACTIVE, CommentCollection::SORT_ORDER_DESC);
+            ->addFieldToSelect('*');
     }
 }

@@ -22,6 +22,6 @@ class PostDataProvider extends \Magento\Ui\DataProvider\AbstractDataProvider
         $this->collection = $collectionFactory->create();
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
         $this->collection = $collectionFactory->create()
-            ->addOrder(PostInterface::IS_ACTIVE, PostCollection::SORT_ORDER_DESC);
+            ->addFieldToSelect('*');
     }
 }
